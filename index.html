@@ -1,0 +1,498 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>English Memory List</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --secondary: #3498db;
+      --background: #ecf0f1;
+      --reviewed: #4CAF50;
+      --not-reviewed: #f44336;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: var(--background);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .auth-form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .list-form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-top: 5px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: var(--secondary);
+      color: white;
+      transition: transform 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    .list-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .list-item {
+      background: white;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .speak-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0 10px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 10px 20px;
+      background: #333;
+      color: white;
+      border-radius: 5px;
+      display: none;
+    }
+
+    .progress-container {
+      margin: 20px 0;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .progress-chart {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto;
+    }
+
+    .status {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 5px;
+    }
+
+    .user-info {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--reviewed);
+      transition: width 0.3s ease;
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .auth-form h2 {
+      text-align: center;
+    }
+
+    .auth-form .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .auth-form button {
+      width: 100%;
+      padding: 10px;
+    }
+
+    .auth-links {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .auth-links a {
+      color: var(--secondary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+      
+      .list-form {
+        padding: 15px;
+      }
+
+      .list-item {
+        padding: 10px;
+        font-size: 14px;
+      }
+
+      button {
+        padding: 8px 15px;
+        font-size: 14px;
+      }
+
+      .input-group input,
+      .input-group textarea {
+        padding: 8px;
+      }
+
+      .user-info {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="authForm" class="auth-form">
+      <h2>Login</h2>
+      <div class="input-group">
+        <label>Email:</label>
+        <input type="email" id="loginEmail" required>
+      </div>
+      <div class="input-group">
+        <label>Password:</label>
+        <input type="password" id="loginPassword" required>
+      </div>
+      <button onclick="login()">Enter</button>
+      <div class="auth-links">
+        <span>Don't have an account? </span><a onclick="showSignup()">Sign Up</a>
+      </div>
+    </div>
+
+    <div id="signupForm" class="auth-form" style="display: none;">
+      <h2>Create Account</h2>
+      <div class="input-group">
+        <label>Name:</label>
+        <input type="text" id="signupName" required>
+      </div>
+      <div class="input-group">
+        <label>Email:</label>
+        <input type="email" id="signupEmail" required>
+      </div>
+      <div class="input-group">
+        <label>Password:</label>
+        <input type="password" id="signupPassword" required>
+      </div>
+      <button onclick="signup()">Sign Up</button>
+      <div class="auth-links">
+        <span>Already have an account? </span><a onclick="showLogin()">Login</a>
+      </div>
+    </div>
+
+    <div id="mainContent" style="display: none;">
+      <div class="user-info">
+        <h3>Welcome to LockIn AI, <span id="userName">Loading...</span>!</h3>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div id="progressPercentage">Progress: 0%</div>
+      </div>
+      <button onclick="logout()" style="margin-bottom: 20px; padding: 10px 20px;">Logout</button>
+      <div class="progress-container">
+        <h3>Progress</h3>
+        <svg class="progress-chart" id="progressChart"></svg>
+        <div class="status" id="status"></div>
+      </div>
+      
+      <div class="list-form">
+        <h2>Add New Word/Phrase</h2>
+        <div class="input-group">
+          <label>English Text:</label>
+          <div style="display: flex; gap: 5px;">
+            <input type="text" id="frontInput" style="flex: 1;">
+            <button onclick="startSpeechInput('frontInput')">🎤</button>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Translation/Notes:</label>
+          <textarea id="backInput"></textarea>
+        </div>
+        <div class="buttons">
+          <button onclick="addCard()">Add</button>
+        </div>
+      </div>
+
+      <div class="list-group" id="cardList"></div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script>
+    // Authentication functions
+    let currentUser = null;
+    let users = JSON.parse(localStorage.getItem('users') || '[]');
+
+    function showLogin() {
+      document.getElementById('authForm').style.display = 'block';
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'none';
+    }
+
+    function showSignup() {
+      document.getElementById('authForm').style.display = 'none';
+      document.getElementById('signupForm').style.display = 'block';
+      document.getElementById('mainContent').style.display = 'none';
+    }
+
+    function signup() {
+      const name = document.getElementById('signupName').value;
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+
+      if (!name || !email || !password) {
+        alert('Please fill all fields!');
+        return;
+      }
+
+      if (users.some(user => user.email === email)) {
+        alert('Email already registered!');
+        return;
+      }
+
+      const newUser = {
+        id: Date.now(),
+        name,
+        email,
+        password,
+        cards: []
+      };
+
+      users.push(newUser);
+      localStorage.setItem('users', JSON.stringify(users));
+      alert('Account created successfully!');
+      showLogin();
+    }
+
+    function login() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      const user = users.find(u => u.email === email);
+      if (!user) {
+        alert('Email not found!');
+        return;
+      }
+
+      if (user.password !== password) {
+        alert('Incorrect password!');
+        return;
+      }
+
+      currentUser = user;
+      localStorage.setItem('currentUser', user.id);
+      document.getElementById('authForm').style.display = 'none';
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+      updateUserInfo();
+      updateCardList();
+    }
+
+    function logout() {
+      currentUser = null;
+      localStorage.removeItem('currentUser');
+      document.getElementById('mainContent').style.display = 'none';
+      document.getElementById('authForm').style.display = 'block';
+      showToast('You have been logged out successfully!');
+    }
+
+    function updateUserInfo() {
+      if (currentUser) {
+        document.getElementById('userName').textContent = currentUser.name;
+        const reviewedCount = currentUser.cards.filter(card => card.reviewed).length;
+        const total = currentUser.cards.length;
+        const percentage = total > 0 ? Math.round((reviewedCount / total) * 100) : 0;
+        document.getElementById('progressFill').style.width = `${percentage}%`;
+        document.getElementById('progressPercentage').textContent = `Progress: ${percentage}%`;
+      }
+    }
+
+    // Existing code modified to use currentUser's cards
+    let cards = currentUser ? currentUser.cards : [];
+    const synths = window.speechSynthesis;
+    let recognition = null;
+
+    function updateCardList() {
+      const list = document.getElementById('cardList');
+      list.innerHTML = cards.map((card, index) => `
+        <div class="list-item">
+          <div>
+            <strong>${card.front}</strong><br>
+            ${card.back}
+          </div>
+          <button class="speak-btn" onclick="speakText('${card.front}')">🔊</button>
+          <button onclick="deleteCard(${index})">🗑️</button>
+        </div>
+      `).join('');
+      updateProgress();
+      updateUserInfo();
+    }
+
+    function addCard() {
+      const front = document.getElementById('frontInput').value;
+      const back = document.getElementById('backInput').value;
+      
+      if (front && back) {
+        cards.push({ 
+          front,
+          back,
+          reviewed: false
+        });
+        currentUser.cards = cards;
+        localStorage.setItem('users', JSON.stringify(users));
+        document.getElementById('frontInput').value = '';
+        document.getElementById('backInput').value = '';
+        updateCardList();
+      }
+    }
+
+    function deleteCard(index) {
+      cards.splice(index, 1);
+      currentUser.cards = cards;
+      localStorage.setItem('users', JSON.stringify(users));
+      updateCardList();
+    }
+
+    function speakText(text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      synths.speak(utterance);
+      showToast(text);
+    }
+
+    function startSpeechInput(fieldId) {
+      if (!recognition) {
+        recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+      }
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById(fieldId).value = transcript;
+      };
+
+      recognition.start();
+    }
+
+    function showToast(text) {
+      const toast = document.getElementById('toast');
+      toast.textContent = text;
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 2500);
+    }
+
+    function updateProgress() {
+      const reviewedCount = cards.filter(card => card.reviewed).length;
+      const total = cards.length;
+      const percentage = (reviewedCount / total) * 100;
+      
+      // Create SVG chart
+      const svg = document.getElementById('progressChart');
+      svg.innerHTML = `
+        <circle cx="100" cy="100" r="90" fill="none" stroke="#ddd" stroke-width="10"/>
+        <circle cx="100" cy="100" r="90" fill="none" stroke="${percentage > 0 ? (percentage >= 100 ? '#4caf50' : '#f44336') : '#ddd'}" stroke-width="10" stroke-dasharray="${percentage > 0 ? (percentage >= 100 ? 628 : (628 * (percentage / 100))) : 0}" stroke-dashoffset="0"/>
+      `;
+
+      // Update status text
+      const status = document.getElementById('status');
+      status.innerHTML = `
+        <div>Reviewed: ${reviewedCount}</div>
+        <div>Remaining: ${total - reviewedCount}</div>
+        <div>${total} Total</div>
+      `;
+    }
+
+    // Check if user is already logged in
+    const currentUserId = localStorage.getItem('currentUser');
+    if (currentUserId) {
+      const user = users.find(u => u.id === Number(currentUserId));
+      if (user) {
+        currentUser = user;
+        document.getElementById('authForm').style.display = 'none';
+        document.getElementById('signupForm').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+        updateUserInfo();
+        updateCardList();
+      }
+    } else {
+      showLogin();
+    }
+  </script>
+</body>
+</html>

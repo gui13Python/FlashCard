@@ -1,0 +1,39 @@
+function signup() {
+  const name = document.getElementById('signupName').value;
+  const email = document.getElementById('signupEmail').value;
+  const password = document.getElementById('signupPassword').value;
+
+  if (!name || !email || !password) {
+    alert('Please fill all fields!');
+    return;
+  }
+
+  if (users.some(user => user.email === email)) {
+    alert('Email already registered!');
+    return;
+  }
+
+  const newUser = {
+    id: Date.now(),
+    name,
+    email,
+    password,
+    cards: []
+  };
+
+  users.push(newUser);
+  localStorage.setItem('users', JSON.stringify(users));
+  alert('Account created successfully!');
+  showLogin();
+}
+
+function updateUserInfo() {
+  if (currentUser) {
+    document.getElementById('userName').textContent = currentUser.name;
+    const reviewedCount = currentUser.cards.filter(card => card.reviewed).length;
+    const total = currentUser.cards.length;
+    const percentage = total > 0 ? Math.round((reviewedCount / total) * 100) : 0;
+    document.getElementById('progressFill').style.width = `${percentage}%`;
+    document.getElementById('progressPercentage').textContent = `Progress: ${percentage}%`;
+  }
+}
