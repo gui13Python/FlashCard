@@ -1,5 +1,33 @@
-.auth-form .input-group {
+.list-item {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-actions {
+  display: flex;
   gap: 5px;
+}
+
+.card-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 5px;
+}
+
+#updateCardBtn {
+  background-color: var(--secondary);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .card-actions button {
+    font-size: 14px;
+    padding: 3px;
+  }
 }

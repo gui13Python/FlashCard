@@ -280,7 +280,16 @@
           <textarea id="backInput"></textarea>
         </div>
         <div class="buttons">
-          <button onclick="addCard()">Add</button>
+          <button id="addCardBtn" onclick="addCard()">Add</button>
+          <button id="updateCardBtn" style="display:none;" onclick="updateCard()">Update</button>
+        </div>
+        
+        <!-- Search input -->
+        <div class="input-group" style="margin-top: 10px;">
+          <div style="display: flex; gap: 5px;">
+            <input type="text" id="searchInput" placeholder="Search words..." style="flex: 1;">
+            <button onclick="searchCards()">🔍</button>
+          </div>
         </div>
       </div>
 
@@ -383,21 +392,62 @@
     let cards = currentUser ? currentUser.cards : [];
     const synths = window.speechSynthesis;
     let recognition = null;
+    let editingIndex = -1;
 
-    function updateCardList() {
+    function updateCardList(filteredCards = null) {
       const list = document.getElementById('cardList');
-      list.innerHTML = cards.map((card, index) => `
+      const cardsToDisplay = filteredCards || cards;
+      
+      list.innerHTML = cardsToDisplay.map((card, index) => `
         <div class="list-item">
           <div>
             <strong>${card.front}</strong><br>
             ${card.back}
           </div>
-          <button class="speak-btn" onclick="speakText('${card.front}')">🔊</button>
-          <button onclick="deleteCard(${index})">🗑️</button>
+          <div class="card-actions">
+            <button class="speak-btn" onclick="speakText('${card.front}')">🔊</button>
+            <button onclick="editCard(${cards.indexOf(card)})">✏️</button>
+            <button onclick="deleteCard(${cards.indexOf(card)})">🗑️</button>
+          </div>
         </div>
       `).join('');
       updateProgress();
       updateUserInfo();
+    }
+
+    function editCard(index) {
+      const card = cards[index];
+      document.getElementById('frontInput').value = card.front;
+      document.getElementById('backInput').value = card.back;
+      
+      document.getElementById('addCardBtn').style.display = 'none';
+      document.getElementById('updateCardBtn').style.display = 'block';
+      
+      editingIndex = index;
+    }
+
+    function updateCard() {
+      if (editingIndex !== -1) {
+        const front = document.getElementById('frontInput').value;
+        const back = document.getElementById('backInput').value;
+        
+        if (front && back) {
+          cards[editingIndex].front = front;
+          cards[editingIndex].back = back;
+          
+          currentUser.cards = cards;
+          localStorage.setItem('users', JSON.stringify(users));
+          
+          document.getElementById('frontInput').value = '';
+          document.getElementById('backInput').value = '';
+          
+          document.getElementById('addCardBtn').style.display = 'block';
+          document.getElementById('updateCardBtn').style.display = 'none';
+          
+          editingIndex = -1;
+          updateCardList();
+        }
+      }
     }
 
     function addCard() {
@@ -478,12 +528,24 @@
       `;
     }
 
+    function searchCards() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      
+      const filteredCards = cards.filter(card => 
+        card.front.toLowerCase().includes(searchTerm) || 
+        card.back.toLowerCase().includes(searchTerm)
+      );
+      
+      updateCardList(filteredCards);
+    }
+
     // Check if user is already logged in
     const currentUserId = localStorage.getItem('currentUser');
     if (currentUserId) {
       const user = users.find(u => u.id === Number(currentUserId));
       if (user) {
         currentUser = user;
+        cards = user.cards;
         document.getElementById('authForm').style.display = 'none';
         document.getElementById('signupForm').style.display = 'none';
         document.getElementById('mainContent').style.display = 'block';
